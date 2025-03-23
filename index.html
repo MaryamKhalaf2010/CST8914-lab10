@@ -1,217 +1,41 @@
-'use strict';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managing Keyboard Focus</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Managing Keyboard Focus</h1>
+    <p>Instructions: Use 'up & down arrow keys' to navigate between menu items, 'enter' to activate a menu item, and the 'escape' key to close the menu.</p>
+    
+    <h2>What to do:</h2>
+    <p>Apply roving index technique to programmatically manage the keyboard focus on the menu (on keys arrow up and down).</p>
+    
+    <div class="menu-button-actions">
+        <p>
+            <label>Pizza Choice:<br> 
+                <input class="action" id="action_output" type="text" value="" readonly>
+            </label>
+        </p>
+        <button type="button" id="menubutton1" aria-haspopup="true" aria-controls="menu1">
+            Pizza Menu
+            <svg class="down" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
+                <path d="M2 3 L5 6 L8 3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+        </button>
 
-// Define a class MenuButtonActions
-class MenuButtonActions {
-  constructor(domNode, performMenuAction) {
-    this.domNode = domNode;
-    this.performMenuAction = performMenuAction;
-    this.buttonNode = domNode.querySelector('button');
-    this.menuNode = domNode.querySelector('[role="menu"]');
-    this.menuitemNodes = [];
-    this.firstMenuitem = false;
-    this.lastMenuitem = false;
-    this.firstChars = [];
+        <!-- Menu with items -->
+        <div role="menu" id="menu1" aria-labelledby="menubutton1">
+            <div role="menuitem" tabindex="-1">Option 1</div>
+            <div role="menuitem" tabindex="-1">Option 2</div>
+            <div role="menuitem" tabindex="-1">Option 3</div>
+            <div role="separator"></div>
+            <div role="menuitem" tabindex="-1">Option 4</div>
+        </div>
+    </div>
 
-    // Add event listeners for button interactions
-    this.buttonNode.addEventListener(
-      'keydown',
-      this.onButtonKeydown.bind(this)
-    );
-    this.buttonNode.addEventListener('click', this.onButtonClick.bind(this));
-
-    // Query and iterate over menu items, setting up event listeners
-    var nodes = domNode.querySelectorAll('[role="menuitem"]');
-
-    for (var i = 0; i < nodes.length; i++) {
-      var menuitem = nodes[i];
-      this.menuitemNodes.push(menuitem);
-      menuitem.tabIndex = -1;
-      this.firstChars.push(menuitem.textContent.trim()[0].toLowerCase());
-
-      menuitem.addEventListener('keydown', this.onMenuitemKeydown.bind(this));
-      menuitem.addEventListener('click', this.onMenuitemClick.bind(this));
-      menuitem.addEventListener(
-        'mouseover',
-        this.onMenuitemMouseover.bind(this)
-      );
-
-      if (!this.firstMenuitem) {
-        this.firstMenuitem = menuitem;
-      }
-      this.lastMenuitem = menuitem;
-    }
-
-    // Add focus in and focus out event listeners for handling focus styles
-    domNode.addEventListener('focusin', this.onFocusin.bind(this));
-    domNode.addEventListener('focusout', this.onFocusout.bind(this));
-
-    // Add mousedown event listener on window to handle clicks outside the menu
-    window.addEventListener(
-      'mousedown',
-      this.onBackgroundMousedown.bind(this),
-      true
-    );
-  }
-
-  setFocusToMenuitem(newMenuitem) {
-    this.menuitemNodes.forEach(function (item) {
-      item.tabIndex = item === newMenuitem ? '0' : '-1';
-    });
-    newMenuitem.focus();
-  }
-
-  setFocusToFirstMenuitem() {
-    this.setFocusToMenuitem(this.firstMenuitem);
-  }
-
-  setFocusToLastMenuitem() {
-    this.setFocusToMenuitem(this.lastMenuitem);
-  }
-
-  setFocusToPreviousMenuitem(currentMenuitem) {
-    var newMenuitem, index;
-
-    if (currentMenuitem === this.firstMenuitem) {
-      newMenuitem = this.lastMenuitem;
-    } else {
-      index = this.menuitemNodes.indexOf(currentMenuitem);
-      newMenuitem = this.menuitemNodes[index - 1];
-    }
-
-    this.setFocusToMenuitem(newMenuitem);
-
-    return newMenuitem;
-  }
-
-  setFocusToNextMenuitem(currentMenuitem) {
-    var newMenuitem, index;
-
-    if (currentMenuitem === this.lastMenuitem) {
-      newMenuitem = this.firstMenuitem;
-    } else {
-      index = this.menuitemNodes.indexOf(currentMenuitem);
-      newMenuitem = this.menuitemNodes[index + 1];
-    }
-    this.setFocusToMenuitem(newMenuitem);
-
-    return newMenuitem;
-  }
-
-  setFocusByFirstCharacter(currentMenuitem, char) {
-    var start, index;
-
-    if (char.length > 1) {
-      return;
-    }
-
-    char = char.toLowerCase();
-
-    // Get start index for search based on position of currentItem
-    start = this.menuitemNodes.indexOf(currentMenuitem) + 1;
-    if (start >= this.menuitemNodes.length) {
-      start = 0;
-    }
-
-    // Check remaining slots in the menu
-    index = this.firstChars.indexOf(char, start);
-
-    // If not found in remaining slots, wrap to the start of the array
-    if (index === -1) {
-      index = this.firstChars.indexOf(char, 0);
-    }
-
-    this.setFocusToMenuitem(this.menuitemNodes[index]);
-  }
-
-  onButtonKeydown(event) {
-    var currentMenuitem = document.activeElement;
-    if (this.menuNode && this.menuNode.contains(currentMenuitem)) {
-      switch (event.keyCode) {
-        case 27: // Escape key
-          this.onButtonClick(event);
-          break;
-        case 38: // Up arrow
-          event.preventDefault();
-          this.setFocusToPreviousMenuitem(currentMenuitem);
-          break;
-        case 40: // Down arrow
-          event.preventDefault();
-          this.setFocusToNextMenuitem(currentMenuitem);
-          break;
-      }
-    }
-  }
-
-  onButtonClick() {
-    if (this.menuNode.style.display === 'block') {
-      this.menuNode.style.display = 'none';
-    } else {
-      this.menuNode.style.display = 'block';
-      this.setFocusToFirstMenuitem();
-    }
-  }
-
-  onMenuitemKeydown(event) {
-    var currentMenuitem = document.activeElement;
-
-    switch (event.keyCode) {
-      case 13: // Enter
-        this.performMenuAction(currentMenuitem);
-        break;
-      case 27: // Escape
-        this.onButtonClick(event);
-        break;
-      case 38: // Up arrow
-        event.preventDefault();
-        this.setFocusToPreviousMenuitem(currentMenuitem);
-        break;
-      case 40: // Down arrow
-        event.preventDefault();
-        this.setFocusToNextMenuitem(currentMenuitem);
-        break;
-    }
-  }
-
-  onMenuitemClick(event) {
-    this.performMenuAction(event.target);
-  }
-
-  onMenuitemMouseover(event) {
-    this.setFocusToMenuitem(event.target);
-  }
-
-  onBackgroundMousedown(event) {
-    var target = event.target;
-    if (
-      this.menuNode &&
-      !this.menuNode.contains(target) &&
-      target !== this.buttonNode
-    ) {
-      this.menuNode.style.display = 'none';
-    }
-  }
-
-  onFocusin(event) {
-    var target = event.target;
-    if (this.menuNode && this.menuNode.contains(target)) {
-      target.tabIndex = '0';
-    }
-  }
-
-  onFocusout(event) {
-    var target = event.target;
-    if (this.menuNode && !this.menuNode.contains(target)) {
-      target.tabIndex = '-1';
-    }
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  var menuButtonActions = new MenuButtonActions(
-    document.querySelector('.menu-button-actions'),
-    function (menuitem) {
-      var output = document.getElementById('action_output');
-      output.value = menuitem.textContent;
-    }
-  );
-});
+    <script src="script.js"></script>
+</body>
+</html>
