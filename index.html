@@ -1,40 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Managing Keyboard Focus</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Focus</title>
+  <link href="CSS.css" rel="stylesheet" type="text/css">
+  <script src="JS.js"></script>
 </head>
 <body>
+  <main>
     <h1>Managing Keyboard Focus</h1>
-    <p>Instructions: Use 'up & down arrow keys' to navigate between menu items, 'enter' to activate a menu item, and the 'escape' key to close the menu.</p>
-    
+    <p>Instructions: Use 'up & down arrow keys' to navigate between menu items (need fix!), 'enter' to activate menu item, 'escape' key to close menu.</p>
     <h2>What to do:</h2>
     <p>Apply roving index technique to programmatically manage the keyboard focus on the menu (on keys arrow up and down).</p>
-    
     <div class="menu-button-actions">
-        <p>
-            <label>Pizza Choice:<br> 
-                <input class="action" id="action_output" type="text" value="" readonly>
-            </label>
-        </p>
-        <button type="button" id="menubutton1" aria-haspopup="true" aria-controls="menu1">
-            Pizza Menu
-            <svg class="down" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
-                <path d="M2 3 L5 6 L8 3" stroke="currentColor" stroke-width="1.5" fill="none"/>
-            </svg>
-        </button>
+      <p>
+        <label>Pizza Choice:<br> <input class="action" id="action_output" type="text" value=""></label>
+      </p>
+      <button type="button" id="menubutton1" aria-haspopup="true" aria-controls="menu1">
+        Pizza Menu
+        <svg xmlns="http://www.w3.org/2000/svg" class="down" width="12" height="9" viewBox="0 0 12 9">
+          <polygon points="1 0, 11 0, 6 8"></polygon>
+        </svg>
+      </button>
 
-        <!-- Menu with items -->
-        <div role="menu" id="menu1" aria-labelledby="menubutton1">
-            <div role="menuitem" tabindex="-1">Pizza 1</div>
-            <div role="menuitem" tabindex="-1">Pizza 2</div>
-            <div role="menuitem" tabindex="-1">Pizza 3</div>
-            <div role="menuitem" tabindex="-1">Pizza 4</div>
-        </div>
+      <ul id="menu1" role="menu" aria-labelledby="menubutton1">
+        <!-- Added tabindex="-1" to menu items for roving tabindex technique -->
+        <li role="menuitem" tabindex="-1">Pizza 1</li>
+        <li role="menuitem" tabindex="-1">Pizza 2</li>
+        <li role="menuitem" tabindex="-1">Pizza 3</li>
+        <li role="menuitem" tabindex="-1">Pizza 4</li>
+      </ul>
     </div>
-
-    <script src="script.js"></script>
+  </main>
 </body>
 </html>
