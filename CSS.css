@@ -1,8 +1,10 @@
+/* General styling for the menu button */
 .menu-button-actions {
   margin: 0;
   padding: 0;
 }
 
+/* Styling for the button that toggles the menu */
 .menu-button-actions button {
   margin: 0;
   padding: 6px;
@@ -16,67 +18,6 @@
 }
 
 .menu-button-actions [role="menu"] {
-  display: none;
+  display: none;  /* Initially hidden */
   position: absolute;
-  margin: 0;
-  padding: 7px 4px;
-  border: 2px solid #045a0d;
-  border-radius: 5px;
-  background-color: #eee;
-}
-
-.menu-button-actions [role="menuitem"],
-.menu-button-actions [role="separator"] {
-  margin: 0;
-  padding: 6px;
-  display: block;
-  width: 4em;
-  background-color: #eee;
-  color: black;
-  border-radius: 5px;
-}
-
-.menu-button-actions [role="separator"] {
-  padding-top: 3px;
-  background-image: url("../images/separator.svg");
-  background-position: center;
-  background-repeat: repeat-x;
-}
-
-.menu-button-actions button svg.down {
-  padding-left: 0.125em;
-  fill: currentcolor;
-  stroke: currentcolor;
-}
-
-.menu-button-actions button[aria-expanded="true"] svg.down {
-  transform: rotate(180deg);
-}
-
-/* focus styling */
-
-.menu-button-actions button:hover,
-.menu-button-actions button:focus,
-.menu-button-actions button[aria-expanded="true"] {
-  padding: 4px;
-  border: 3px solid #045a0d;
-  background: #eee;
-  color: #222;
-  outline: none;
-  margin: 0;
-}
-
-.menu-button-actions [role="menuitem"].focus,
-.menu-button-actions [role="menuitem"]:focus {
-  padding: 4px;
-  border: 2px solid #045a0d;
-  background: #045a0d;
-  color: #fff;
-  outline: none;
-  margin: 0;
-}
-
-input.action:focus {
-  outline: 2px solid #045a0d;
-  background: #def;
-}
+  margin:
